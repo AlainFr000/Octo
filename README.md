@@ -8,3 +8,4 @@ Projet done with
 - GIT
 - Lua
 - Löve
+- https://ninjikin.itch.io/starter-tiles & https://ninjikin.itch.io/grass?download for ressources sprites for the map
