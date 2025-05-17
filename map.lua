@@ -1,35 +1,61 @@
 -- helper file for main.lua
 
-Partimage = function ( source, tilenumber )
+-- tilewidith and tileheight are the size of the each individual sprite in the sprite sheet -- 
+-- here we generate one quad for each sprite in the sprite sheet and then attribute it a number.
+-- This number will be called after to generate the map
 
-    local tile= {}
-    for i = tilenumber*16, (tilenumber+1)*16-1, 1 do
-        tile[i] = {}
-        for j = tilenumber*16, (tilenumber+1)*16-1, 1 do
-            if source[i] and source[i][j] then
-                love.graphics.NewQuad(i, j, 16, 16, source:getDimensions())
+function GenerateSprite (source, tilewidth, tileheight)
+
+    local fullsheet = love.graphics.newImage(source) -- load the sprite sheet
+    
+    if fullsheet == nil then
+        return nil
+    else
+        local fullsheetWidth = fullsheet:getWidth() / tilewidth -- give the number of sprite in x absis
+        local fullsheetHeight = fullsheet:getHeight() / tileheight -- give the number of sprite in y absis
+    
+        local tilenumber = 0
+        local tile = {}
+        for i = 0, fullsheetHeight - 1 do
+
+            for j = 0, fullsheetWidth - 1 do 
+                tile[tilenumber] = love.graphics.newQuad(j * tilewidth, i * tileheight, tilewidth, tileheight, fullsheet:getDimensions())
+                tilenumber = tilenumber + 1
+            end
+            
+        end
+
+        return tile
+    end
+
+end
+-- this function will draw the map on the screen with some randomisation see the graphics/map/GRASS+.png
+function Draw_map(fullsheet, quad, width, height, size_of_quad)
+    
+    math.randomseed(os.time())
+    local tile_in_width = width / size_of_quad
+    local tile_in_height = height / size_of_quad
+    local timecycle ={
+        {275, 275, 275, 276, 276, 277},
+        {0, 52, 100, 0, 52, 100},
+        {1, 53, 101, 1, 53, 101}
+    } -- table of location for the sprite of the map for night and morning or noun
+    local plants = {
+        {337, 338, 339},
+        {304, 305, 306},
+        {307, 308, 309}
+    } -- table of location for the sprite of the plants for night and morning or noun
+
+    local time_of_day = math.random(1, 3) -- randomly select a time of thge day
+
+    for i = 0, tile_in_height -1 do
+        for j = 0, tile_in_width -1 do
+            love.graphics.draw(fullsheet, quad[timecycle[time_of_day][math.random(6)]], j * size_of_quad, i * size_of_quad) -- draw a random tile depending on the day or night
+            if math.random(0, 100) < 4 then
+                love.graphics.draw(fullsheet, quad[plants[time_of_day][math.random(3)]], j * size_of_quad, i * size_of_quad) -- draw some random mushrooms
             end
         end
-
     end
-
-    return tile
-end
-
--- tilewidith and tileheight are the size of the each individual sprite in the sprite sheet
-function GenerateSprite (fullsheet, tilewidth, tileheight)
-    local fullsheetWidth = fullsheet:getWidth() / tilewidth -- give the number of sprite in x absis
-    local fullsheetHeight = fullsheet:getHeight() / tileheight -- give the number of sprite in y absis
     
-    local tilenumber = 0
-    local tile = {}
-    for i = 0, fullsheetHeight - 1 do
-
-        for j = 0, fullsheetWidth - 1 do 
-            tile[tilenumber] = love.graphics.NewQuad(i * tilewidth, j * tileheight, tilewidth, tileheight, fullsheet:getDimensions())
-        end
-        
-    end
-
-    return tile
+    
 end

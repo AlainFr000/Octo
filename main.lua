@@ -5,7 +5,12 @@ require 'map'
 
 local position
 local positiona
-local source = love.graphics.newImage ("graphics/map/GRASS+.png")
+local source = "graphics/map/GRASS+.png"
+local fullsheet
+local size_of_quad = 16
+local tiles
+local mapCanvas
+local map_needs_redraw = true
 
 
 -- setting up the window size
@@ -23,12 +28,9 @@ local test2
 function love.load()
     position = 0
     positiona = 300
-    
-    if source ~= nil
-    then 
-        test2 = love.graphics.newQuad(0, 0, 16, 16, source:getDimensions())
-    end
-    --test2 = Partimage(love.graphics.newImage("graphics/map/GRASS+.png"), 1)
+    fullsheet = love.graphics.newImage("graphics/map/GRASS+.png")
+    tiles = GenerateSprite(source, size_of_quad, size_of_quad)
+    mapCanvas = love.graphics.newCanvas(width, height)
 end
 
 function love.update(dt) -- used to update the variable
@@ -40,8 +42,13 @@ function love.update(dt) -- used to update the variable
 end
 
 function love.draw() -- used to refresh the graphics based on the variable
-    love.graphics.print('Hello World!', position, 300)
-    love.graphics.print('Hello World!', positiona, 300)
-    love.graphics.draw(source, test2, position, height/2)
+    if map_needs_redraw == true then -- redraw the map if needed
+        love.graphics.setCanvas(mapCanvas)  
+        Draw_map(fullsheet, tiles, width, height, size_of_quad)
+        love.graphics.setCanvas()
+        map_needs_redraw = false
+    end
+    -- Draw the image of the map
+    love.graphics.draw(mapCanvas, 0, 0)
 end
 
