@@ -1,0 +1,1 @@
+-- helper file for the handling of the character, his sprites, statitics etc

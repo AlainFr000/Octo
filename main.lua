@@ -2,10 +2,9 @@
 
 require 'map'
 
-
 local position
 local positiona
-local source = "graphics/map/GRASS+.png"
+local map_source = "graphics/map/GRASS+.png"
 local fullsheet
 local size_of_quad = 16
 local tiles
@@ -29,7 +28,7 @@ function love.load()
     position = 0
     positiona = 300
     fullsheet = love.graphics.newImage("graphics/map/GRASS+.png")
-    tiles = GenerateSprite(source, size_of_quad, size_of_quad)
+    tiles = GenerateSprite(map_source, size_of_quad, size_of_quad)
     mapCanvas = love.graphics.newCanvas(width, height)
 end
 
