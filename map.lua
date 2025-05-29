@@ -1,9 +1,6 @@
 -- helper file for main.lua
-require 'main'
+
 require 'util'
-
-
-
 
 -- this function will draw the map on the screen with some randomisation see the graphics/map/GRASS+.png
 function Draw_map(fullsheet, quad, width, height, size_of_quad)
@@ -32,6 +29,5 @@ function Draw_map(fullsheet, quad, width, height, size_of_quad)
             end
         end
     end
-    
     
 end
