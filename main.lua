@@ -1,8 +1,9 @@
 -- Initialisation
 
-require 'map'
+
 require 'mapObject'
-require 'character'
+require 'playerObject'
+require 'ennemyObject'
 require 'util'
 
 
@@ -11,16 +12,11 @@ local width = 1920
 local height = 1080
 local resolution = love.window.setMode( width, height)
 
--- map variable initialisation
+-- map initialisation
 map = Map:new() -- create a new map object
 
 -- character variable initialisation
-local player = Character
-local size_of_quad_character = 64
-local player_sprites = {}
-local player_source_idle = "graphics/character/Unarmed_Idle/Unarmed_Idle_full.png"
-local player_source_run = "graphics/character/Unarmed_Run/Unarmed_Run_full.png"
-
+player = Player:new() -- create the player object
 
 function love.load()
 
@@ -28,6 +24,7 @@ end
 
 function love.update(dt) -- used to update the variable
 
+    player:update(dt)
 
 end
 
@@ -35,6 +32,7 @@ function love.draw() -- used to refresh the graphics based on the variable
     -- Draw the image of the map
     map:draw()
     -- Draw the player character
+    player:draw()
 
 end
 

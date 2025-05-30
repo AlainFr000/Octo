@@ -1,6 +1,8 @@
--- tentative at object-oriented programming in Lua
+--  Map object file
 
 require 'util'
+require 'playerObject'
+require 'ennemyObject'
 
 
 -- Map class definition
