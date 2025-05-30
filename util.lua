@@ -14,16 +14,15 @@ function GenerateSprite (source, tilewidth, tileheight)
         local fullsheetWidth = fullsheet:getWidth() / tilewidth -- give the number of sprite in x absis
         local fullsheetHeight = fullsheet:getHeight() / tileheight -- give the number of sprite in y absis
     
-        local tilenumber = 0
+        local tilenumber = 1
         local tile = {}
         for i = 1, fullsheetHeight, 1 do
-
             for j = 1, fullsheetWidth, 1 do 
-                tile[tilenumber] = love.graphics.newQuad((j-1) * tilewidth, (i-1) * tileheight, tilewidth, tileheight, fullsheet:getDimensions())
+                tile[tilenumber] = love.graphics.newQuad((j - 1) * tilewidth, (i - 1) * tileheight, tilewidth, tileheight, fullsheet:getDimensions())
                 tilenumber = tilenumber + 1
             end
-            
         end
+
         return tile
     end
 
