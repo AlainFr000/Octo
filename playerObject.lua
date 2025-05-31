@@ -5,8 +5,13 @@ require 'util'
 Player = {}
 Player.__index = Player
 
--- constants
+-- constants and timers for animation purpose
+local frame_timer = 0
+local timer = 0
 
+
+ANIMATION_RATE = 30
+SPEED = 1
 QUADS = {
     { --idle
         {1, 2, 3, 4}, -- down
@@ -15,10 +20,10 @@ QUADS = {
         {25, 26, 27, 28}, -- right
     },
     { --run
-        {1, 2, 3, 4}, -- down
-        {13, 14, 15, 16}, -- up
-        {5, 6, 7, 8}, -- left
-        {9, 10, 11, 12}, -- right
+        {1, 2, 3, 4, 5, 6, 7, 8}, -- down
+        {25, 26, 27, 28, 29, 30, 31, 32}, -- up
+        {9, 10, 11, 12, 13, 14, 15, 16}, -- left
+        {17, 18, 19, 20, 21, 22, 23, 24}, -- right
     }
 }
 
@@ -33,6 +38,7 @@ function Player:new()
         status = 1, --idle, reference to quads
         direction = 1, -- down
         frame = 1,
+        speed = SPEED,
         position_x = 1920/2,
         position_y = 1080/2,
         tile = {},
@@ -49,15 +55,82 @@ function Player:new()
 end
 
 function Player:draw()
-    print(self.status)
     love.graphics.draw(self.spritesheet[self.status], self.sheettiles[self.status][QUADS[self.status][self.direction][self.frame]], self.position_x, self.position_y, 0, 2, 2, 32, 32)
 end
 
 function Player:update(dt)
     -- update of player sprite
-    if self.frame == 4 then
-        self.frame = 1
+    timer = timer + dt
+    if timer > frame_timer + ANIMATION_RATE * dt then
+        frame_timer = timer + ANIMATION_RATE * dt
+        if self.frame == 4 then
+            self.frame = 1
+        else
+            self.frame = self.frame + 1
+        end
+    end
+
+    if love.keyboard.isDown("right") and love.keyboard.isDown("down") then
+        if map.border[1] - self.position_y > map.render_distance or map.border[4] - self.position_x > map.render_distance then
+            self.position_y = self.position_y + self.speed / math.sqrt(2)
+            self.position_x = self.position_x + self.speed / math.sqrt(2)
+        end
+        self.direction = 1
+        self.status = 2
+
+    elseif love.keyboard.isDown("left") and love.keyboard.isDown("down") then
+        if map.border[1] - self.position_y > map.render_distance or self.position_x - map.border[3] > map.render_distance then
+            self.position_y = self.position_y + self.speed / math.sqrt(2)
+            self.position_x = self.position_x - self.speed / math.sqrt(2)
+        end
+        self.direction = 1
+        self.status = 2
+
+    elseif love.keyboard.isDown("right") and love.keyboard.isDown("up") then
+        if self.position_y - map.border[2] > map.render_distance or map.border[4] - self.position_x > map.render_distance then
+            self.position_y = self.position_y - self.speed / math.sqrt(2)
+            self.position_x = self.position_x + self.speed / math.sqrt(2)
+        end
+        self.direction = 2
+        self.status = 2
+
+    elseif love.keyboard.isDown("left") and love.keyboard.isDown("up") then
+        if self.position_y - map.border[2] > map.render_distance or self.position_x - map.border[3] > map.render_distance then
+            self.position_y = self.position_y - self.speed / math.sqrt(2)
+            self.position_x = self.position_x - self.speed / math.sqrt(2)
+        end
+        self.direction = 2
+        self.status = 2
+
+    elseif love.keyboard.isDown("down") then
+        if map.border[1] - self.position_y > map.render_distance then
+            self.position_y = self.position_y + self.speed
+        end
+        self.direction = 1
+        self.status = 2
+
+    elseif love.keyboard.isDown("up") then
+        if self.position_y - map.border[2] > map.render_distance then
+            self.position_y = self.position_y - self.speed
+        end
+        self.direction = 2
+        self.status = 2
+
+    elseif love.keyboard.isDown("left") then
+        if self.position_x - map.border[3] > map.render_distance then
+            self.position_x = self.position_x - self.speed
+        end
+        self.direction = 3
+        self.status = 2
+
+    elseif love.keyboard.isDown("right") then
+        if map.border[4] - self.position_x > map.render_distance then
+            self.position_x = self.position_x + self.speed
+        end
+        self.direction = 4
+        self.status = 2
     else
-        self.frame = self.frame + 1
+        self.status = 1
     end
 end
+

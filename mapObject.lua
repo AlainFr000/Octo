@@ -14,6 +14,13 @@ Map.__index = Map
 MAP_WIDTH = 120
 MAP_HEIGHT = 68
 
+BORDER = {
+    LEFT = 0,
+    RIGHT = MAP_WIDTH * 16,
+    TOP = 0,
+    BOT = MAP_HEIGHT * 16
+}
+
 MAP_TYPE = {
     1,
     2,
@@ -54,6 +61,8 @@ function Map:new()
         mapchoice = MAP_CHOICE,-- status of the time of the day
         struct_tiles = {},
         addi_tiles = {},
+        border = {MAP_HEIGHT * 16, 0, 0,MAP_WIDTH * 16}, -- down, up, left, right
+        render_distance = 20 * 16 -- tiles x size of tile
     }
 
     self.sheettiles = GenerateSprite("graphics/map/GRASS+.png", self.size_of_quad, self.size_of_quad)
@@ -101,6 +110,20 @@ function Map:getaddiTile(x, y) -- get the tile at position (x, y)
     return self.addi_tiles[self.tiles_in_height * (x - 1) + y]
 end
 
-function Map:append(direction)
+function Map:append()
     -- this function is used to append the map on the screen based on the character direction
+    -- the appending occur if the player is too close from the border, and adds a random layer if so, as well as translating the camera
+    local distance_to_border = {self.border[1] - player.position_y,
+    player.position_y - self.border[2],
+    player.position_x - self.border[3],
+    self.border[4] - player.position_x
+    } -- down, up, left, right
+
+    for i = 1, 4, 1 do
+        if distance_to_border[i] < self.render_distance and player.direction == i then
+            -- to draw a new line depending on the direction, translate the windows and 
+        end  
+        print(map.border[i])
+    end
+
 end
