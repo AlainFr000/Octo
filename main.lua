@@ -25,19 +25,15 @@ function love.load()
 end
 
 function love.update(dt) -- used to update the variable
-
     player:update(dt)
-    map:append()
-
 end
 
 
 function love.draw() -- used to refresh the graphics based on the variable
     -- Draw the image of the map
     map:draw()
-    -- Draw the player character
+    -- Draw the player characters
     player:draw()
-    
 
 end
 
