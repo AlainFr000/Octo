@@ -12,9 +12,9 @@ local timer = 0
 local timer_map = 0
 
 
-ANIMATION_RATE = 30
-MAP_REFRESH_RATE = 5
-SPEED = 1
+ANIMATION_RATE = 15
+MAP_REFRESH_RATE = 3
+SPEED = 3
 QUADS = {
     { --idle
         {1, 2, 3, 4}, -- down
@@ -87,10 +87,16 @@ function Player:update(dt)
         if map.border[1] - self.position_y > map.render_distance then
             self.position_y = self.position_y + self.speed / math.sqrt(2)
             self.direction = 1
+        else
+            self.direction = 1
+            map:append(self.direction, update)
         end
         if map.border[4] - self.position_x > map.render_distance then
             self.position_x = self.position_x + self.speed / math.sqrt(2)
             self.direction = 4
+        else
+            self.direction = 4
+            map:append(self.direction, update)
         end
 
     elseif love.keyboard.isDown("left") and love.keyboard.isDown("down") then
@@ -98,10 +104,16 @@ function Player:update(dt)
         if map.border[1] - self.position_y > map.render_distance then
             self.position_y = self.position_y + self.speed / math.sqrt(2)
             self.direction = 1
+        else
+            self.direction = 1
+            map:append(self.direction, update)
         end
         if self.position_x - map.border[3] > map.render_distance then
             self.position_x = self.position_x - self.speed / math.sqrt(2)
             self.direction = 3
+        else
+            self.direction = 3
+            map:append(self.direction, update)
         end
 
     elseif love.keyboard.isDown("right") and love.keyboard.isDown("up") then
@@ -109,10 +121,16 @@ function Player:update(dt)
         if self.position_y - map.border[2] > map.render_distance then
             self.position_y = self.position_y - self.speed / math.sqrt(2)
             self.direction = 2
+        else
+            self.direction = 2
+            map:append(self.direction, update)
         end
         if map.border[4] - self.position_x > map.render_distance then
             self.position_x = self.position_x + self.speed / math.sqrt(2)
             self.direction = 4
+        else
+            self.direction = 4
+            map:append(self.direction, update)
         end
 
     elseif love.keyboard.isDown("left") and love.keyboard.isDown("up") then
@@ -120,10 +138,16 @@ function Player:update(dt)
         if self.position_y - map.border[2] > map.render_distance then
             self.position_y = self.position_y - self.speed / math.sqrt(2)
             self.direction = 2
+        else
+            self.direction = 2
+            map:append(self.direction, update)
         end
         if self.position_x - map.border[3] > map.render_distance then
             self.position_x = self.position_x - self.speed / math.sqrt(2)
             self.direction = 3
+        else
+            self.direction = 3
+            map:append(self.direction, update)
         end
 
     elseif love.keyboard.isDown("down") then
@@ -156,6 +180,8 @@ function Player:update(dt)
     elseif love.keyboard.isDown("right") then
         if map.border[4] - self.position_x > map.render_distance then
             self.position_x = self.position_x + self.speed
+        else
+            map:append(self.direction, update)
         end
         self.direction = 4
         self.status = 2

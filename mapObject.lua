@@ -48,6 +48,9 @@ QUAD = {
         ADDITIONAL = {308, 309, 310}
     }
 }
+R1 = #QUAD[1].STRUCTURE
+R2 = #QUAD[1].ADDITIONAL
+R3 = "undefined"
 
 -- constructor for the Map class
 
@@ -70,16 +73,8 @@ function Map:new()
     setmetatable(self, Map)
 
     -- set the map tiles with some randomisation
-    for i = 1, self.tiles_in_height, 1 do
-        for j = 1, self.tiles_in_width, 1 do
-            self:setstructTile(i, j, QUAD[self.mapchoice].STRUCTURE[math.random(6)]) -- choose a random tile within the quad structure table defined above
-            if math.random(0, 100) < 4 then
-                self:setaddiTile(i, j, QUAD[self.mapchoice].ADDITIONAL[math.random(3)]) -- draw some random artefacts
-            else
-                self:setaddiTile(i, j, VOID_TILE) -- no additional tile
-            end
-        end
-    end
+    self:procedural(1, self.tiles_in_height, 1, self.tiles_in_width, R1, R2, R3)
+
     return self
 
 end
@@ -94,28 +89,39 @@ function Map:draw()
 end
 
 function Map:setstructTile(x, y, tile) -- set the tile at position (x, y) to the specified tile
-    self.struct_tiles[self.tiles_in_height * (x - 1)+ y] = tile
+    self.struct_tiles[self.tiles_in_width * (x - 1) + y] = tile
 end
 
 function Map:setaddiTile(x, y, tile) -- set the tile at position (x, y) to the specified tile
-    self.addi_tiles[self.tiles_in_height * (x - 1)+ y] = tile
+    self.addi_tiles[self.tiles_in_width * (x - 1) + y] = tile
 end
 
 function Map:getstructTile(x, y) -- get the tile at position (x, y)
-    return self.struct_tiles[self.tiles_in_height * (x - 1) + y]
+    return self.struct_tiles[self.tiles_in_width * (x - 1) + y]
 end
 
 function Map:getaddiTile(x, y) -- get the tile at position (x, y)
-    return self.addi_tiles[self.tiles_in_height * (x - 1) + y]
+    return self.addi_tiles[self.tiles_in_width * (x - 1) + y]
 end
-function Map:procedural(height, length, r1, r2, r3) -- we input the size of the area to procedurally draw.
+
+function Map:procedural(height_start, height_end, length_start, length_end, r1, r2, r3) -- we input the size of the area to procedurally draw.
     -- would replace procedurally select the quad for tiles (depends on context)
+    for i = height_start, height_end, 1 do
+        for j = length_start, length_end, 1 do
+            self:setstructTile(i, j, QUAD[self.mapchoice].STRUCTURE[math.random(r1)]) -- choose a random tile within the quad structure table defined above
+            if math.random(0, 100) < 4 then
+                self:setaddiTile(i, j, QUAD[self.mapchoice].ADDITIONAL[math.random(r2)]) -- draw some random artefacts
+            else
+                self:setaddiTile(i, j, VOID_TILE) -- no additional tile
+            end
+        end
+    end
 end
+
 function Map:append(direction, update)
     -- this function is used to append the map on the screen based on the character direction
     -- the appending occur if the player is too close from the border, and adds a random layer if so, as well as translating the camera
     
-
     if direction == 1 and update == true then
         for i = 1, self.tiles_in_height - 1, 1 do -- reproduce the map but translated by 1 line.
             for j = 1, self.tiles_in_width, 1 do
@@ -128,16 +134,8 @@ function Map:append(direction, update)
             end
 
         end
-
         -- then the new line is drawn
-        for i = 1, self.tiles_in_width, 1 do
-            self:setstructTile(self.tiles_in_height, i, QUAD[self.mapchoice].STRUCTURE[math.random(6)]) -- choose a random tile within the quad structure table defined above
-            if math.random(0, 100) < 4 then
-                self:setaddiTile(self.tiles_in_height, i, QUAD[self.mapchoice].ADDITIONAL[math.random(3)]) -- draw some random artefacts
-            else
-                self:setaddiTile(self.tiles_in_height, i, VOID_TILE) -- no additional tile
-            end
-        end
+        self:procedural(self.tiles_in_height, self.tiles_in_height, 1, self.tiles_in_width, R1, R2, R3)
     end
 
     if direction == 2 and update == true then
@@ -152,39 +150,41 @@ function Map:append(direction, update)
             end
 
         end
-
         -- then the new line is drawn
-        for i = 1, self.tiles_in_width, 1 do
-            self:setstructTile(1, i, QUAD[self.mapchoice].STRUCTURE[math.random(6)]) -- choose a random tile within the quad structure table defined above
-            if math.random(0, 100) < 4 then
-                self:setaddiTile(1, i, QUAD[self.mapchoice].ADDITIONAL[math.random(3)]) -- draw some random artefacts
-            else
-                self:setaddiTile(1, i, VOID_TILE) -- no additional tile
-            end
-        end
+        self:procedural(1, 1, 1, self.tiles_in_width, R1, R2, R3)
     end
 
     if direction == 3 and update == true then
-        for j = self.tiles_in_width, 2 , - 1 do -- reproduce the map but translated by 1 line.
-            for i = self.tiles_in_height, 1 , - 1 do
+        for i = self.tiles_in_height, 1, -1 do -- reproduce the map but translated by 1 line.
+            for j = self.tiles_in_width, 2, -1 do
+                -- Shift structural tiles
                 self:setstructTile(i, j, self:getstructTile(i, j - 1))
+                -- Shift additional tiles
                 if self:getaddiTile(i, j - 1) ~= VOID_TILE then
                     self:setaddiTile(i, j, self:getaddiTile(i, j - 1))
                 else
-                    self:setaddiTile(i, j, VOID_TILE) -- no additional tile
+                    self:setaddiTile(i, j, VOID_TILE)
                 end
             end
-
         end
-
         -- then the new line is drawn
-        for i = 1, self.tiles_in_height, 1 do
-            self:setstructTile(i, 1, QUAD[self.mapchoice].STRUCTURE[math.random(6)]) -- choose a random tile within the quad structure table defined above
-            if math.random(0, 100) < 4 then
-                self:setaddiTile(i, 1, QUAD[self.mapchoice].ADDITIONAL[math.random(3)]) -- draw some random artefacts
-            else
-                self:setaddiTile(i, 1, VOID_TILE) -- no additional tile
+        self:procedural(1, self.tiles_in_height, 1, 1, R1, R2, R3)
+    end
+
+    if direction == 4 and update == true then
+        for i = self.tiles_in_height, 1, -1 do -- reproduce the map but translated by 1 line.
+            for j = 1, self.tiles_in_width - 1, 1 do
+                -- Shift structural tiles
+                self:setstructTile(i, j, self:getstructTile(i, j + 1))
+                -- Shift additional tiles
+                if self:getaddiTile(i, j + 1) ~= VOID_TILE then
+                    self:setaddiTile(i, j, self:getaddiTile(i, j + 1))
+                else
+                    self:setaddiTile(i, j, VOID_TILE)
+                end
             end
         end
+        -- then the new line is drawn
+        self:procedural(1, self.tiles_in_height, self.tiles_in_width, self.tiles_in_width, R1, R2, R3)
     end
 end
