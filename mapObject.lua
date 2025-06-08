@@ -2,7 +2,7 @@
 
 require 'util'
 require 'playerObject'
-require 'ennemyObject'
+require 'enemyObject'
 
 
 -- Map class definition
