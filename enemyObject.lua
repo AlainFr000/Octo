@@ -9,10 +9,14 @@ Enemy.__index = Enemy
 -- constants and timers for animation etc
 local timer = 0
 local frame_timer = 0
+local enemy_timer = 0
+local SPAWN_TIMER = 100
 
 local distance
 local animation_rate = 15
 local speed = 2
+local number_of_enemy = 1
+math.randomseed(os.time())
 local quads = {
     { -- Slime 1 walk
         { -- walk
@@ -57,7 +61,14 @@ local quads = {
         }
     }
 }
-
+local height = 1080
+local width = 1920
+local spawn_positions = {
+    {height, height + 100, 0, width},
+    {-100, 0, 0, width},
+    {0, height, -100, 0},
+    {0, height, width, width + 100}
+}
 
 function Enemy:new()
     local self = {
@@ -89,6 +100,12 @@ function Enemy:new()
         GenerateSprite("graphics/enemies/Slime3/Run/Slime3_Run_full.png", self.size_of_quad, self.size_of_quad)
     }
 
+    local selector = math.random(4)
+    self.position_x = math.random(spawn_positions[selector][1], spawn_positions[selector][2])
+    self.position_y = math.random(spawn_positions[selector][3], spawn_positions[selector][4])
+    self.type_of_enemy = math.random(3)
+    self.status = math.random(2)
+
     setmetatable(self, Enemy)
 
     return self
@@ -96,21 +113,24 @@ end
 
 
 function Enemy:draw()
-    love.graphics.draw(self.spritesheet[self.status], self.sheettiles[self.status * self.type_of_enemy][quads[self.status * self.type_of_enemy][self.status][self.direction][self.frame]], self.position_x, self.position_y, 0, 2, 2, 32, 32)
+    love.graphics.draw(self.spritesheet[self.status * self.type_of_enemy], self.sheettiles[self.status * self.type_of_enemy][quads[self.type_of_enemy][self.status][self.direction][self.frame]], self.position_x, self.position_y, 0, 2, 2, 32, 32)
 end
 
-function Enemy:spawn()
-   
+function Enemy:spawn(dt)    
+    enemy_timer = enemy_timer + 1
+    if enemy_timer > SPAWN_TIMER then
+        number_of_enemy = number_of_enemy + 1
+        ENEMY_LIST[number_of_enemy] = Enemy:new()
+        enemy_timer = 0
+    end
 end
 
-function Enemy:update(dt)
-    local update = false
+-- Enemy update, called by player update
+function Enemy:update(dt, update_position)
     local direction_x, x_delta
     local direction_y, y_delta
     timer = timer + dt
-
     if timer > frame_timer + animation_rate * dt then
-        update = true
         frame_timer = timer + animation_rate * dt
         if self.frame == 8 then
             self.frame = 1
@@ -129,6 +149,22 @@ function Enemy:update(dt)
     direction_y = y_delta / distance
 
     -- we then add the actual position and direction multiplied by the speed and the delta time. 
-    self.position_x = self.position_x + direction_x * self.speed
-    self.position_y = self.position_y + direction_y * self.speed
+    if update_position == 1 then
+        self.position_x = self.position_x + direction_x * self.speed
+    elseif update_position == 2 then
+        self.position_y = self.position_y + direction_y * self.speed
+    elseif update_position == 3 then
+        self.position_x = self.position_x + direction_x * self.speed
+        self.position_y = self.position_y + direction_y * self.speed
+    end
+
+    x_delta = player.position_x - self.position_x
+    y_delta = player.position_y - self.position_y
+    distance = math.sqrt(x_delta * x_delta + y_delta * y_delta)
+
+    if distance < 16 then
+        player.status = 3
+        player.direction = 1
+        player.frame = 1
+    end
 end
