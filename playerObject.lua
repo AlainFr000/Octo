@@ -240,5 +240,11 @@ function Player:update(dt)
         for i = 1, #ENEMY_LIST, 1 do
             ENEMY_LIST[i]:update(dt, update_enemy_position)
         end
+
+        
+        for i = 1, #PROJECTILE_LIST, 1 do
+            PROJECTILE_LIST[i]:update(dt, update_enemy_position)
+        end
     end
 end
+
