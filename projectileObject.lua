@@ -66,13 +66,21 @@ function Projectile:new()
 end
 
 function Projectile:draw()
+    love.graphics.draw(self.spritesheet[self.color_of_projectile], self.sheettiles[self.color_of_projectile][quads[self.type_of_projectile][self.frame]], self.position_x, self.position_y, 1, 1, 2, 2)
+end
 
-    love.graphics.draw(self.spritesheet[self.color_of_projectile], self.sheettiles[self.color_of_projectile][quads[self.type_of_projectile][self.frame]], self.position_x, self.position_y)
+function Projectile:reset()
+    timer = 0
+    frame_timer = 0
+    fire_timer = 0
+    number_of_projectile = 1
 end
 
 function Projectile:update(dt, update_position)
     local direction_mod_y
     local direction_mod_x
+
+    local x_delta, y_delta, distance
     timer = timer + dt
     if timer > frame_timer + animation_rate * dt then
         frame_timer = timer + animation_rate * dt
@@ -103,13 +111,26 @@ function Projectile:update(dt, update_position)
     elseif update_position == 3 then
         self.position_x = self.position_x + self.speed * direction_mod_x
         self.position_y = self.position_y + self.speed * direction_mod_y
-    end   
+    end
+
+    for i, enemy in ipairs(ENEMY_LIST) do
+        local x_delta = enemy.position_x - self.position_x
+        local y_delta = enemy.position_y - self.position_y
+        local distance = math.sqrt(x_delta * x_delta + y_delta * y_delta)
+        if distance < 32 then
+            enemy.position_x = -1e18 
+            enemy.position_y = -1e18
+            self.position_x = 1e18
+            self.position_y = 1e18
+            self.direction = 1
+            player:additional_scoring()
+            break
+        end
+end
 
 end
 
 function Projectile:spawn()
     number_of_projectile = number_of_projectile + 1
     PROJECTILE_LIST[number_of_projectile] = Projectile:new()
-    print("FIRE", PROJECTILE_LIST[number_of_projectile].direction, player.direction)
-
 end

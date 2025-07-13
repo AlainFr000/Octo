@@ -11,11 +11,11 @@ local timer = 0
 local frame_timer = 0
 local enemy_timer = 0
 local SPAWN_TIMER = 100
-
+local number_of_enemy = 1
 local distance
 local animation_rate = 15
 local speed = 2
-local number_of_enemy = 1
+
 math.randomseed(os.time())
 local quads = {
     { -- Slime 1 walk
@@ -125,6 +125,14 @@ function Enemy:spawn(dt)
     end
 end
 
+function Enemy:reset()
+    timer = 0
+    frame_timer = 0
+    enemy_timer = 0
+    SPAWN_TIMER = 100
+    number_of_enemy = 1
+end
+
 -- Enemy update, called by player update
 function Enemy:update(dt, update_position)
     local direction_x, x_delta
@@ -168,3 +176,4 @@ function Enemy:update(dt, update_position)
         player.frame = 1
     end
 end
+

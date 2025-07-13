@@ -70,7 +70,25 @@ function Player:scoring(dt)
     if self.status ~= 3 then 
         self.score = self.score + 1 * #ENEMY_LIST
     end
-    
+end
+
+function Player:additional_scoring()
+    if self.status ~= 3 then 
+        self.score = self.score + 1000
+    end
+end
+
+function Player:reset()
+    self.status = 1
+    self.position_x = 1920/2
+    self.position_y = 1080/2
+    self.frame = 1
+    self.score = 0
+    self.direction = 1
+    frame_timer = 0
+    frame_timer_map = 0
+    timer = 0
+    timer_map = 0
 end
 
 function Player:draw()
@@ -237,14 +255,14 @@ function Player:update(dt)
             update_enemy_position = 3
         end
 
-        for i = 1, #ENEMY_LIST, 1 do
-            ENEMY_LIST[i]:update(dt, update_enemy_position)
+        for i, enemy in ipairs(ENEMY_LIST) do
+            enemy:update(dt, update_enemy_position)
         end
 
-        
-        for i = 1, #PROJECTILE_LIST, 1 do
-            PROJECTILE_LIST[i]:update(dt, update_enemy_position)
+        for i, projectile in ipairs(PROJECTILE_LIST) do
+            projectile:update(dt, update_enemy_position)
         end
+
     end
 end
 
