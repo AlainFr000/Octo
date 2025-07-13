@@ -27,8 +27,3 @@ function GenerateSprite (source, tilewidth, tileheight)
     end
 
 end
-
--- util function to handle the multiples updates and the ennemy spawns
-function Updater(dt)
-    
-end

@@ -27,12 +27,6 @@ MAP_TYPE = {
     3,
     -- 1 = night, 2 = day, 3 = desert
 }
-
--- random choice for the map type
-math.randomseed(os.time())
-MAP_CHOICE = math.random(1,#MAP_TYPE)
-VOID_TILE = 87 -- tile used when nothing needs to be rendered
-
 -- definition of the spritesheet quad to be used depending on the map type
 QUAD = {
     { -- night
@@ -51,6 +45,12 @@ QUAD = {
 R1 = #QUAD[1].STRUCTURE
 R2 = #QUAD[1].ADDITIONAL
 R3 = "undefined"
+
+-- random choice for the map type
+math.randomseed(os.time())
+MAP_CHOICE = math.random(1,#MAP_TYPE)
+VOID_TILE = 87 -- tile used when nothing needs to be rendered
+
 
 -- constructor for the Map class
 

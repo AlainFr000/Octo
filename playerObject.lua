@@ -254,7 +254,7 @@ function Player:update(dt)
             self.status = 1
             update_enemy_position = 3
         end
-
+-- Updates of the ennemy and projectile list
         for i, enemy in ipairs(ENEMY_LIST) do
             enemy:update(dt, update_enemy_position)
         end

@@ -38,7 +38,7 @@ function Projectile:new()
             love.graphics.newImage("graphics/projectiles/All_Fire_Bullet_Pixel_16x16_07.png")
         },
         size_of_quad = 16,
-        color_of_projectile = 6,
+        color_of_projectile = math.random(8),
         type_of_projectile = 1,
         frame = 1,
         direction = player.direction,

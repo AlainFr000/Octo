@@ -116,6 +116,7 @@ function Enemy:draw()
     love.graphics.draw(self.spritesheet[self.status * self.type_of_enemy], self.sheettiles[self.status * self.type_of_enemy][quads[self.type_of_enemy][self.status][self.direction][self.frame]], self.position_x, self.position_y, 0, 2, 2, 32, 32)
 end
 
+-- Function to spawn ennemies based on timer.
 function Enemy:spawn(dt)    
     enemy_timer = enemy_timer + 1
     if enemy_timer > SPAWN_TIMER then
@@ -124,7 +125,7 @@ function Enemy:spawn(dt)
         enemy_timer = 0
     end
 end
-
+-- Function to reset the locals when player launch another game.
 function Enemy:reset()
     timer = 0
     frame_timer = 0
