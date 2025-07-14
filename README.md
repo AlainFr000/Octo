@@ -1,5 +1,5 @@
 # Octo
-#### Video Demo: <(https://www.youtube.com/watch?v=-ZPVl4Vspiw)>
+#### Video Demo: https://www.youtube.com/watch?v=-ZPVl4Vspiw
 #### Description:
 
 Project for CS50X final project :
