@@ -65,7 +65,7 @@ function Map:new()
         struct_tiles = {},
         addi_tiles = {},
         border = {MAP_HEIGHT * 16, 0, 0,MAP_WIDTH * 16}, -- down, up, left, right
-        render_distance = 20 * 16, -- tiles x size of tile
+        render_distance = 9 * 16, -- tiles x size of tile
     }
 
     self.sheettiles = GenerateSprite("graphics/map/GRASS+.png", self.size_of_quad, self.size_of_quad)
@@ -86,6 +86,10 @@ function Map:draw()
             love.graphics.draw(self.fullsheet, self.sheettiles[self:getaddiTile(i, j)], (j - 1) * self.size_of_quad, (i - 1) * self.size_of_quad)
         end
     end
+end
+function Map:reset()
+    self.mapchoice = math.random(1,#MAP_TYPE)
+    self:procedural(1, self.tiles_in_height, 1, self.tiles_in_width, R1, R2, R3)
 end
 
 function Map:setstructTile(x, y, tile) -- set the tile at position (x, y) to the specified tile

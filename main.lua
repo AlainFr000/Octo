@@ -56,6 +56,7 @@ function love.update(dt) -- used to update the variable
             player:reset()
             Enemy:reset()
             Projectile:reset()
+            map:reset()
         end
     end
 
